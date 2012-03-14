@@ -41,4 +41,5 @@ PLATFORMS
 DEPENDENCIES
   rake
   resque
+  sinatra
   sinatra-reloader
