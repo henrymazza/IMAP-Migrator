@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'resque'
 require 'net/imap'
 require 'pony'
@@ -22,7 +24,7 @@ module IMAPMigrator
       dd 'logging in...'
       dest.login params['dest_email'], params['dest_password']
 
-      #TODO it would be better to be user configurable or based on server specific profiles 
+      #TODO it would be better to be user configurable or based on server specific profiles
 			if params['dest_server'] == "imap.gmail.com"
         mappings = {
           "INBOX"               => "Inbox",
@@ -32,7 +34,7 @@ module IMAPMigrator
         mappings = {}
       end
 
-      # Guarantees that none is left behind.  
+      # Guarantees that none is left behind.
       source.list('', '*').each do |f|
         mappings[f.name] = f.name unless mappings[f.name]
       end
@@ -75,7 +77,7 @@ module IMAPMigrator
         if uids.length > 0
           uid_fetch_block(dest, uids, ['ENVELOPE']) do |data|
             id = data.attr['ENVELOPE'].message_id
-            unless id 
+            unless id
               puts ">>>> NULL <<<<<"
             end
             if defined? dest_inf and dest_inf[id]
@@ -94,7 +96,7 @@ module IMAPMigrator
             mid = data.attr['ENVELOPE'].message_id
 
             # If this message is already in the destination folder, skip it.
-            next if dest_info[mid] 
+            next if dest_info[mid]
 
             # Download the full message body from the source folder.
             ds "downloading message #{mid}..."
