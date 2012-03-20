@@ -1,5 +1,6 @@
 require 'resque'
 require 'net/imap'
+require 'pony'
 
 module IMAPMigrator
   module Worker
@@ -8,7 +9,9 @@ module IMAPMigrator
     # Migrates all mail from one server to another
     def self.perform(params)
 			@params = params
-		
+
+      @report = 0
+
       ds 'connecting...'
       source = Net::IMAP.new params['source_server'], 993, true
       ds 'logging in...'
@@ -103,6 +106,7 @@ module IMAPMigrator
             begin
               dest.append(dest_folder, msg.attr['RFC822'], msg.attr['FLAGS'], msg.attr['INTERNALDATE'])
               success = true
+              @report += 1
             rescue Net::IMAP::NoResponseError => e
               puts "Got exception: #{e.message}. Retrying..."
               sleep 1
@@ -113,6 +117,10 @@ module IMAPMigrator
         source.close
         dest.close
       end
+      Pony.mail :to => params['source_email'],
+            :from => "lamigra@officina.me",
+            :subject => "Migração Completa!",
+            :body => erb(:email)
     end
 
 		protected
