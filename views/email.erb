@@ -1,1 +1,6 @@
-<%= @report.inspect %>
+<% @report.each_pair do |transfer, info| %>
+<%= transfer %>
+    origem: <%= info[:source] %>
+    destino: <%= info[:dest] %>
+    transferidos: <%= info[:transfered] %>
+<% end %>
