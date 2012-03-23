@@ -122,7 +122,7 @@ module IMAPMigrator
       Pony.mail :to => params['source_email'],
             :from => "lamigra@officina.me",
             :subject => "Migração Completa!",
-            :body => erb(:email)
+            :body => "#{@report} emails foram transferidos."
     end
 
 		protected
