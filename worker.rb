@@ -42,7 +42,7 @@ module IMAPMigrator
       # Loop through folders and copy messages.
       mappings.each do |source_folder, dest_folder|
 
-        transfer = "#{soruce_folder} => #{dest_folder}"
+        transfer = "#{source_folder} => #{dest_folder}"
         @report[transfer] = Hash.new
 
         puts "\nProcessing: #{source_folder} => #{dest_folder}"
