@@ -12,7 +12,7 @@ module IMAPMigrator
     def self.perform(params)
 			@params = params
 
-      @report = 0
+      @report = Hash.new
 
       ds 'connecting...'
       source = Net::IMAP.new params['source_server'], 993, true
@@ -41,6 +41,9 @@ module IMAPMigrator
 
       # Loop through folders and copy messages.
       mappings.each do |source_folder, dest_folder|
+
+        transfer = "#{soruce_folder} => #{dest_folder}"
+        @report[transfer] = Hash.new
 
         puts "\nProcessing: #{source_folder} => #{dest_folder}"
 
@@ -74,6 +77,7 @@ module IMAPMigrator
         dd 'analyzing existing messages...'
         uids = dest.uid_search(['ALL'])
         dd "found #{uids.length} messages"
+        @report[transfer][:source] = uids.length
         if uids.length > 0
           uid_fetch_block(dest, uids, ['ENVELOPE']) do |data|
             id = data.attr['ENVELOPE'].message_id
@@ -91,6 +95,10 @@ module IMAPMigrator
         # Loop through all messages in the source folder.
         uids = source.uid_search(['ALL'])
         ds "found #{uids.length} messages"
+
+        @report[transfer][:dest] = uids.length
+        @report[transfer][:transfered] = 0
+
         if uids.length > 0
           uid_fetch_block(source, uids, ['ENVELOPE']) do |data|
             mid = data.attr['ENVELOPE'].message_id
@@ -108,7 +116,7 @@ module IMAPMigrator
             begin
               dest.append(dest_folder, msg.attr['RFC822'], msg.attr['FLAGS'], msg.attr['INTERNALDATE'])
               success = true
-              @report += 1
+              @report[transfer][:transfered] += 1
             rescue Net::IMAP::NoResponseError => e
               puts "Got exception: #{e.message}. Retrying..."
               sleep 1
@@ -119,10 +127,13 @@ module IMAPMigrator
         source.close
         dest.close
       end
+      
+      email = ERB.new(File.read('view/email.erb'))
+
       Pony.mail :to => params['source_email'],
             :from => "lamigra@officina.me",
             :subject => "Migração Completa!",
-            :body => "#{@report} emails foram transferidos."
+            :body => email.result(binding)
     end
 
 		protected

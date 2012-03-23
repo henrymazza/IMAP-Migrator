@@ -1,3 +1,6 @@
-Migração dos emails foi concluída. <%= @report %> emails foram transferidos.
-
-
+<%= for @report in transfer, info %>
+  <%= transfer %>
+    origem: <%= info[:source] %>
+    destino: <%= info[:dest] %>
+    transferidos: <%= info[:transfered] %>
+<% end %>
