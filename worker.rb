@@ -81,7 +81,7 @@ module IMAPMigrator
         dd 'analyzing existing messages...'
         uids = dest.uid_search(['ALL'])
         dd "found #{uids.length} messages"
-        @report[transfer][:source] = uids.length
+        @report[transfer][:dest] = uids.length
         if uids.length > 0
           uid_fetch_block(dest, uids, ['ENVELOPE']) do |data|
             id = data.attr['ENVELOPE'].message_id
@@ -100,7 +100,7 @@ module IMAPMigrator
         uids = source.uid_search(['ALL'])
         ds "found #{uids.length} messages"
 
-        @report[transfer][:dest] = uids.length
+        @report[transfer][:source] = uids.length
         @report[transfer][:transfered] = 0
 
         if uids.length > 0
