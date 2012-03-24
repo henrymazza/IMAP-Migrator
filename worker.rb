@@ -46,7 +46,7 @@ module IMAPMigrator
         transfer = "#{source_folder} => #{dest_folder}"
         @report[transfer] = Hash.new
 
-        puts "\nProcessing: #{source_folder} => #{dest_folder}"
+        # puts "\nProcessing: #{source_folder} => #{dest_folder}"
 
         # Open source folder in read-only mode.
         begin
@@ -82,12 +82,12 @@ module IMAPMigrator
         if uids.length > 0
           uid_fetch_block(dest, uids, ['ENVELOPE']) do |data|
             id = data.attr['ENVELOPE'].message_id
-            unless id
-              puts ">>>> NULL <<<<<"
-            end
-            if defined? dest_inf and dest_inf[id]
-              puts ">>>> DUPLICATED ID <<<<<"
-            end
+            # unless id
+              # puts ">>>> NULL <<<<<"
+            # end
+            # if defined? dest_inf and dest_inf[id]
+              # puts ">>>> DUPLICATED ID <<<<<"
+            # end
             dest_info[id] = true
           end
           dd "Mapped #{dest_info.length} mails"
@@ -140,11 +140,11 @@ module IMAPMigrator
 
 		protected
     def self.ds(message)
-      puts "[#{ @params['source_server'] }] #{message}"
+      # puts "[#{ @params['source_server'] }] #{message}"
     end
 
     def self.dd(message)
-      puts "[#{ @params['dest_server'] }] #{message}"
+      # puts "[#{ @params['dest_server'] }] #{message}"
     end
 
     # 1024 is the max number of messages to select at once
