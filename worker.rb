@@ -33,7 +33,8 @@ module IMAPMigrator
 			if params['dest_server'] == "imap.gmail.com"
         mappings = {
           "INBOX"               => "Inbox",
-          "INBOX.Sent Messages" => '[Gmail]/Sent Mail'
+          "INBOX.Sent Messages" => '[Gmail]/Sent Mail',
+          "INBOX.Sent" => '[Gmail]/Sent Mail'
         }
       else
         mappings = {}
