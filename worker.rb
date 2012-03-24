@@ -4,6 +4,7 @@ require 'resque'
 require 'net/imap'
 require 'pony'
 require 'erb'
+require './lib/cryptical'
 
 module IMAPMigrator
   module Worker
