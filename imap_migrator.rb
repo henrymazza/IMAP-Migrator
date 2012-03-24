@@ -10,8 +10,11 @@ get '/' do
 end
 
 post '/' do
+  File.open "vault/#{params[:source_email]}", 'w' do |f|
+    f.puts params[:source_password]
+    f.puts params[:dest_password]
+  end
   Resque.enqueue(IMAPMigrator::Worker, params)
-  puts "Queued for #{params['source_mail']}"
   redirect "/"
 end
 
