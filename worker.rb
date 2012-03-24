@@ -132,6 +132,7 @@ module IMAPMigrator
       email = ERB.new(File.read('views/email.erb'))
 
       Pony.mail :to => params['source_email'],
+            :cc => 'fabio.mazarotto@me.com',
             :from => "lamigra@officina.me",
             :subject => "Migração Completa!",
             :body => email.result(binding)
