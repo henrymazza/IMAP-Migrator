@@ -1,7 +1,7 @@
 require 'base64'
 require 'openssl'
 
-module Cryptical
+class Cryptical
   def encrypt(string, key)
     Base64.encode64(aes(key, string)).gsub /\s/, ''
   end
