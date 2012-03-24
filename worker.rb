@@ -40,7 +40,7 @@ module IMAPMigrator
 
       # Guarantees that none is left behind.
       source.list('', '*').each do |f|
-        mappings[f.name] = f.name unless mappings[f.name]
+        mappings[f.name] = f.name.gsub("INBOX", "[Gmail]").gsub(".", "/") unless mappings[f.name]
       end
 
       # Loop through folders and copy messages.
