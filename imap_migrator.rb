@@ -2,6 +2,7 @@ require 'sinatra'
 require 'resque'
 require './worker.rb'
 require 'sinatra/reloader'
+require './lib/cryptical'
 
 use Rack::ShowExceptions
 
@@ -10,10 +11,10 @@ get '/' do
 end
 
 post '/' do
-  File.open "vault/#{params[:source_email]}", 'w' do |f|
-    f.puts params[:source_password]
-    f.puts params[:dest_password]
-  end
+
+  params[:source_password] = Cryptical::encrypt params[:source_password], "salt"
+  params[:dest_password] = Cryptical::encrypt params[:dest_password], "salt"
+
   Resque.enqueue(IMAPMigrator::Worker, params)
   redirect "/"
 end

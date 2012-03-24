@@ -11,6 +11,9 @@ module IMAPMigrator
 
     # Migrates all mail from one server to another
     def self.perform(params)
+      params[:source_password] = Cryptical::decrypt params[:source_password], "salt"
+      params[:dest_password] = Cryptical::decrypt params[:dest_password], "salt"
+
 			@params = params
 
       @report = Hash.new
