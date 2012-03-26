@@ -72,9 +72,6 @@ module IMAPMigrator
           next
         end
 
-				# skip this folder if it's empty 
-				next if uids.length == 0 
-		
         # Open (or create) destination folder in read-write mode.
         begin
           dd "selecting folder '#{dest_folder}'..."
