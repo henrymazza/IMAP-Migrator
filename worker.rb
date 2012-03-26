@@ -30,19 +30,29 @@ module IMAPMigrator
       dest.login params['dest_email'], params['dest_password']
 
       #TODO it would be better to be user configurable or based on server specific profiles
-			if params['dest_server'] == "imap.gmail.com"
-        mappings = {
-          "INBOX"               => "Inbox",
-          "INBOX.Sent Messages" => '[Gmail]/Sent Mail',
-          "INBOX.Sent" => '[Gmail]/Sent Mail'
-        }
-      else
-        mappings = {}
+      source_sent = source.list('', '*')
+      source_sent.map(&:name).select{|folder| folder =~ /sent|enviad[oa]s/i}.each do |f|
+        source.examine f
+        uids = source.uid_search(['ALL'])
+        puts "#{f} (#{uids.length})"
       end
 
-      # Guarantees that none is left behind.
+      probable_sent = {}
+      source.list('', '*').map(&:name).select{|folder| folder =~ /sent|enviad[oa]s/i}.each do |f|
+        source.examine f
+        uids = source.uid_search(['ALL'])
+        probable_sent[f] = uids.length
+      end
+
+      # populate mappings with the sent directory - this is probably the one
+      # with sent in the name and the most messages in it
+			mappings = {
+        "INBOX.Sent Messages" => probable_sent.sort_by{|folder, count| count}.last[0]
+      }
+
+      # Guarantees that none is left behind - renames folder to the GMail standard
       source.list('', '*').each do |f|
-        mappings[f.name] = f.name unless mappings[f.name]
+        mappings[f.name] = f.name.gsub(/^INBOX\./, '').gsub('.', '/') unless mappings[f.name]
       end
 
       # Loop through folders and copy messages.
@@ -65,9 +75,9 @@ module IMAPMigrator
         dd 'analyzing existing messages...'
         uids = dest.uid_search(['ALL'])
 
-				# skip this folder if it's empty
-				next if uids.length == 0
-
+				# skip this folder if it's empty 
+				next if uids.length == 0 
+		
         # Open (or create) destination folder in read-write mode.
         begin
           dd "selecting folder '#{dest_folder}'..."
