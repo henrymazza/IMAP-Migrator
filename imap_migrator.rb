@@ -12,8 +12,8 @@ end
 
 post '/' do
 
-  params[:source_password] = Cryptical.encrypt params[:source_password], "salt"
-  params[:dest_password] = Cryptical.encrypt params[:dest_password], "salt"
+  params[:encrypted_source_password] = Cryptical.encrypt params[:source_password], "salt"
+  params[:encrypted_dest_password] = Cryptical.encrypt params[:dest_password], "salt"
 
   Resque.enqueue(IMAPMigrator::Worker, params)
   redirect "/"
