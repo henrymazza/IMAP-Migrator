@@ -12,6 +12,9 @@ module IMAPMigrator
 
     # Migrates all mail from one server to another
     def self.perform(params)
+      #TODO delete this
+      puts params.inspect
+
       params['encrypted_source_password'] = Cryptical.decrypt params['encrypted_source_password'], "salt"
       params['encrypted_dest_password'] = Cryptical.decrypt params['encrypted_dest_password'], "salt"
 
