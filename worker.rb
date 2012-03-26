@@ -15,8 +15,8 @@ module IMAPMigrator
       #TODO delete this
       puts params.inspect
 
-      params['encrypted_source_password'] = Cryptical.decrypt params['encrypted_source_password'], "salt"
-      params['encrypted_dest_password'] = Cryptical.decrypt params['encrypted_dest_password'], "salt"
+      params['source_password'] = Cryptical.decrypt params['encrypted_source_password'], "salt"
+      params['dest_password'] = Cryptical.decrypt params['encrypted_dest_password'], "salt"
 
 			@params = params
 
