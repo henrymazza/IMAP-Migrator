@@ -62,6 +62,12 @@ module IMAPMigrator
           next
         end
 
+        dd 'analyzing existing messages...'
+        uids = dest.uid_search(['ALL'])
+
+				# skip this folder if it's empty
+				next if uids.length == 0
+
         # Open (or create) destination folder in read-write mode.
         begin
           dd "selecting folder '#{dest_folder}'..."
@@ -80,10 +86,7 @@ module IMAPMigrator
         # Build a lookup hash of all message ids present in the destination folder.
         dest_info = {}
 
-        dd 'analyzing existing messages...'
-        uids = dest.uid_search(['ALL'])
         dd "found #{uids.length} messages"
-        @report[transfer][:dest] = uids.length
         if uids.length > 0
           uid_fetch_block(dest, uids, ['ENVELOPE']) do |data|
             id = data.attr['ENVELOPE'].message_id
@@ -97,6 +100,8 @@ module IMAPMigrator
           end
           dd "Mapped #{dest_info.length} mails"
         end
+        @report[transfer][:dest] = "#{uids.length} (#{dest_info.length} uniques)"
+
 
         # Loop through all messages in the source folder.
         uids = source.uid_search(['ALL'])
