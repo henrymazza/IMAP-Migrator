@@ -38,9 +38,9 @@ module IMAPMigrator
       end
 
       probable_sent = {}
-      source.list('', '*').map(&:name).select{|folder| folder =~ /sent|enviad[oa]s/i}.each do |f|
-        source.examine f
-        uids = source.uid_search(['ALL'])
+      dest.list('', '*').map(&:name).select{|folder| folder =~ /sent|enviad[oa]s/i}.each do |f|
+        dest.examine f
+        uids = dest.uid_search(['ALL'])
         probable_sent[f] = uids.length
       end
 
