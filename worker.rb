@@ -72,9 +72,6 @@ module IMAPMigrator
           next
         end
 
-        dd 'analyzing existing messages...'
-        uids = dest.uid_search(['ALL'])
-
 				# skip this folder if it's empty 
 				next if uids.length == 0 
 		
@@ -93,6 +90,9 @@ module IMAPMigrator
           end
         end
 
+        dd 'analyzing existing messages...'
+        uids = dest.uid_search(['ALL'])
+
         # Build a lookup hash of all message ids present in the destination folder.
         dest_info = {}
 
@@ -110,7 +110,7 @@ module IMAPMigrator
           end
           dd "Mapped #{dest_info.length} mails"
         end
-        @report[transfer][:dest] = "#{uids.length} (#{dest_info.length} uniques)"
+        @report[transfer][:dest] = "#{uids.length}"
 
 
         # Loop through all messages in the source folder.
