@@ -18,7 +18,7 @@ module IMAPMigrator
       source_password = Cryptical.decrypt params['encrypted_source_password'], "salt"
       dest_password = Cryptical.decrypt params['encrypted_dest_password'], "salt"
 
-			@params = params
+      @params = params
 
       @report = Hash.new
 
@@ -48,7 +48,7 @@ module IMAPMigrator
 
       # populate mappings with the sent directory - this is probably the one
       # with sent in the name and the most messages in it
-			mappings = {
+      mappings = {
         sent_folders[0] => sent_folders[1]
       }
 
@@ -157,7 +157,7 @@ module IMAPMigrator
             :body => email.result(binding)
     end
 
-		protected
+    protected
     def self.ds(message)
       puts "[#{ @params['source_server'] }] #{message}"
     end
