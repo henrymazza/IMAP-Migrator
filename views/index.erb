@@ -1,36 +1,37 @@
 <h1>La Migra</h1>
 <h3><%= settings.environment %></h3>
 <form action="/" method="post" accept-charset="utf-8">
-	<div>
-		<h3>Origem</h3>
-		<label for="source_email">Email:</label>
-		<input type="text" name="source_email" value="" id="source_email"/>
-		<label for="source_password">Senha:</label>
-		<input type="password" name="source_password" value="" id=""/>
-		<input type="text" name="source_server" value="secure.emailsrvr.com" id="source_server"/>
-		<input type="text" name="source_port" value="993" id="source_port"/>
-		<input type="checkbox" name="source_ssl" value="ssl" id="source_ssl" checked />
-	</div>
-	<div>
-		<h3>Destino</h3>
-		<label for="dest_email">Email:</label>
-		<input type="text" name="dest_email" value="" id="dest_email"/>
-		<label for="dest_password">Senha:</label>
-		<input type="password" name="dest_password" value="" id="dest_password"/>
-		<input type="text" name="dest_server" value="imap.gmail.com" id="dest_server"/>
-		<input type="text" name="dest_port" value="993" id="dest_port"/>
-		<input type="checkbox" name="dest_ssl" value="ssl" id="dest_ssl" checked />
-	</div>
+  <div>
+    <h3>Origem</h3>
+    <label for="source_email">Email:</label>
+    <input type="text" name="source_email" value="" id="source_email"/>
+    <label for="source_password">Senha:</label>
+    <input type="password" name="source_password" value="" id=""/>
+    <input type="text" name="source_server" value="secure.emailsrvr.com" id="source_server"/>
+    <input type="text" name="source_port" value="993" id="source_port"/>
+    <input type="checkbox" name="source_ssl" value="ssl" id="source_ssl" checked />
+  </div>
+  <div>
+    <h3>Destino</h3>
+    <label for="dest_email">Email:</label>
+    <input type="text" name="dest_email" value="" id="dest_email"/>
+    <label for="dest_password">Senha:</label>
+    <input type="password" name="dest_password" value="" id="dest_password"/>
+    <input type="text" name="dest_server" value="imap.gmail.com" id="dest_server"/>
+    <input type="text" name="dest_port" value="993" id="dest_port"/>
+    <input type="checkbox" name="dest_ssl" value="ssl" id="dest_ssl" checked />
+  </div>
 
-	<p><input type="submit" value="Continue &rarr;"/></p>
-	<p><input type="submit" name="folders" value="Mostrar Pastas"/></p>
+  <p><input type="submit" value="Continue &rarr;"/></p>
+  <p><input type="submit" name="folders" value="Mostrar Pastas"/></p>
 </form>
 
 <div id="report">
-	<% info = Resque.info %>
-	Pending: <%= info[:pending]  %></br>
-	Processed: <%= info[:processed] %></br>
-	Queues: <%= info[:queues] %>
+  <% info = Resque.info %>
+  Pending: <%= info[:pending]  %></br>
+  Processed: <%= info[:processed] %></br>
+  Queues: <%= info[:queues] %></br>
+  Working: <%= info[:working] %>
 </div>
 
 
