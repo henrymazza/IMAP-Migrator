@@ -15,6 +15,13 @@ post '/' do
   params[:encrypted_source_password] = Cryptical.encrypt params[:source_password], "salt"
   params[:encrypted_dest_password] = Cryptical.encrypt params[:dest_password], "salt"
 
+
+
+  params.delete(:source_password)
+  params.delete(:dest_password)
+  params.delete("source_password")
+  params.delete("dest_password")
+
   Resque.enqueue(IMAPMigrator::Worker, params)
   redirect "/"
 end
