@@ -15,8 +15,8 @@ module IMAPMigrator
       #TODO delete this
       puts params.inspect
 
-      params['source_password'] = Cryptical.decrypt params['encrypted_source_password'], "salt"
-      params['dest_password'] = Cryptical.decrypt params['encrypted_dest_password'], "salt"
+      source_password = Cryptical.decrypt params['encrypted_source_password'], "salt"
+      dest_password = Cryptical.decrypt params['encrypted_dest_password'], "salt"
 
 			@params = params
 
@@ -25,12 +25,12 @@ module IMAPMigrator
       ds 'connecting...'
       source = Net::IMAP.new params['source_server'], 993, true
       ds 'logging in...'
-      source.login params['source_email'], params['source_password']
+      source.login params['source_email'], source_password
 
       dd 'connecting...'
       dest = Net::IMAP.new params['dest_server'], 993, true
       dd 'logging in...'
-      dest.login params['dest_email'], params['dest_password']
+      dest.login params['dest_email'], dest_password
 
       sent_folders = []
       
