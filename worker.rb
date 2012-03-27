@@ -32,25 +32,24 @@ module IMAPMigrator
       dd 'logging in...'
       dest.login params['dest_email'], params['dest_password']
 
-      #TODO it would be better to be user configurable or based on server specific profiles
-      source_sent = source.list('', '*')
-      source_sent.map(&:name).select{|folder| folder =~ /sent|enviad[oa]s/i}.each do |f|
-        source.examine f
-        uids = source.uid_search(['ALL'])
-        puts "#{f} (#{uids.length})"
-      end
+      sent_folders = []
+      
+      [source, dest].each do |mail|
+        probable_sent = {}
 
-      probable_sent = {}
-      dest.list('', '*').map(&:name).select{|folder| folder =~ /sent|enviad[oa]s/i}.each do |f|
-        dest.examine f
-        uids = dest.uid_search(['ALL'])
-        probable_sent[f] = uids.length
+        # colect folders that match and take theirs messages count
+        mail.list('', '*').map(&:name).select{|folder| folder =~ /sent|enviad[oa]s/i}.each do |f|
+          mail.examine f
+          uids = mail.uid_search(['ALL'])
+          probable_sent[f] = uids.length
+        end
+        sent_folders << probable_sent.sort_by{|k,v| v}.last[0].to_s
       end
 
       # populate mappings with the sent directory - this is probably the one
       # with sent in the name and the most messages in it
 			mappings = {
-        "INBOX.Sent Messages" => probable_sent.sort_by{|folder, count| count}.last[0]
+        sent_folders[0] => sent_folders[1]
       }
 
       # Guarantees that none is left behind - renames folder to the GMail standard
