@@ -130,7 +130,7 @@ module IMAPMigrator
             # Download the full message body from the source folder.
             ds "downloading message #{mid}...\n#{data.attr['ENVELOPE']}"
             msg = source.uid_fetch(data.attr['UID'], ['RFC822', 'FLAGS', 'INTERNALDATE', 'RFC822.SIZE']).first
-            ds "OK. Size: #{mst.attr['RFC822.SIZE']} - Date: #{msg.attr['INTERNALDATE']}"
+            ds "OK. Size: #{msg.attr['RFC822.SIZE']} - Date: #{msg.attr['INTERNALDATE']}"
 
             # Append the message to the destination folder, preserving flags and internal timestamp.
             dd "storing message #{mid}..."
@@ -141,7 +141,7 @@ module IMAPMigrator
               @report[transfer][:transfered] += 1
             rescue Net::IMAP::NoResponseError => e
               puts "Got exception: #{e.message}. Retrying..."
-              tell_admin e.message, mst.attr['RFC822']
+              tell_admin e.message, msg.attr['RFC822']
               sleep 1
             end until success
           end
