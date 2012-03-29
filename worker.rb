@@ -122,8 +122,14 @@ module IMAPMigrator
         @report[transfer][:transfered] = 0
 
         if uids.length > 0
-          uid_fetch_block(source, uids, ['ENVELOPE']) do |data|
+          uid_fetch_block(source, uids, ['ENVELOPE', 'RFC822.SIZE']) do |data|
             mid = data.attr['ENVELOPE'].message_id
+
+            if data.attr['RFC822.SIZE'] > 20_000_000
+              tell_admin "Message size exceeds append limit.", data.attr['ENVELOPE']
+              ds "Mensagem muito grande, pulando"
+              next
+            end
 
             # If this message is already in the destination folder, skip it.
             next if dest_info[mid]
