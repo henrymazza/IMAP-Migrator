@@ -196,9 +196,6 @@ module IMAPMigrator
             #{body}
         EOS
     end
-    def self.tell_admin subject, body
-      elizane@akivest.com.br
-    end
     def self.ds(message)
       puts "[#{ @params['source_server'] }] #{message}"
     end
