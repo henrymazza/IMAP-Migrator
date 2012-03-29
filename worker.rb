@@ -135,7 +135,11 @@ module IMAPMigrator
             next if dest_info[mid]
 
             # Download the full message body from the source folder.
-            ds "downloading message #{mid}...\n#{Rfc2047.decode(data.attr['ENVELOPE'].subject)}"
+            begin 
+              ds "downloading message #{mid}...\n#{Rfc2047.decode(data.attr['ENVELOPE'].subject)}"
+            rescue 
+              puts "Rfc2047 Gem couldn't decode subject!"
+            end
             msg = source.uid_fetch(data.attr['UID'], ['RFC822', 'FLAGS', 'INTERNALDATE', 'RFC822.SIZE']).first
             ds "OK. Size: #{msg.attr['RFC822.SIZE']} - Date: #{msg.attr['INTERNALDATE']}"
 
