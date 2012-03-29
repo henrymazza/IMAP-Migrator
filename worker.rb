@@ -190,11 +190,7 @@ module IMAPMigrator
       Pony.mail :to => 'fabio.mazarotto@me.com',
         :from => "lamigra@officina.me",
         :subject => subject,
-        :body => <<-EOS
-            Error processing #{params[:source_email]}.
-
-            #{body}
-        EOS
+        :body => body
     end
     def self.ds(message)
       puts "[#{ @params['source_server'] }] #{message}"
