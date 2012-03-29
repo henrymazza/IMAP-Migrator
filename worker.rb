@@ -186,7 +186,7 @@ module IMAPMigrator
     end
 
     protected
-    def tell_admin subject, body
+    def self.tell_admin subject, body
       Pony.mail :to => 'fabio.mazarotto@me.com',
         :from => "lamigra@officina.me",
         :subject => subject,
