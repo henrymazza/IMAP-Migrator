@@ -140,6 +140,13 @@ module IMAPMigrator
             rescue Net::IMAP::NoResponseError => e
               puts "Got exception: #{e.message}. Retrying..."
               sleep 1
+            rescue Exception => e
+              Pony.mail :to => 'fabio.mazarotto@me.com',
+                :from => "lamigra@officina.me",
+                :subject => "Erro na Migração",
+                :body => e.inspect
+
+              next
             end until success
           end
         end
