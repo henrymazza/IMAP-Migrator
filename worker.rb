@@ -129,7 +129,8 @@ module IMAPMigrator
 
             # Download the full message body from the source folder.
             ds "downloading message #{mid}...\n#{data.attr['ENVELOPE']}"
-            msg = source.uid_fetch(data.attr['UID'], ['RFC822', 'FLAGS', 'INTERNALDATE']).first
+            msg = source.uid_fetch(data.attr['UID'], ['RFC822', 'FLAGS', 'INTERNALDATE', 'RFC822.SIZE']).first
+            ds "OK. Size: #{mst.attr['RFC822.SIZE']} - Date: #{msg.attr['INTERNALDATE']}"
 
             # Append the message to the destination folder, preserving flags and internal timestamp.
             dd "storing message #{mid}..."
