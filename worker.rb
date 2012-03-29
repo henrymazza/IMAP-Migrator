@@ -128,7 +128,7 @@ module IMAPMigrator
             next if dest_info[mid]
 
             # Download the full message body from the source folder.
-            ds "downloading message #{mid}..."
+            ds "downloading message #{mid}...\n#{data.attr['ENVELOPE']}"
             msg = source.uid_fetch(data.attr['UID'], ['RFC822', 'FLAGS', 'INTERNALDATE']).first
 
             # Append the message to the destination folder, preserving flags and internal timestamp.
