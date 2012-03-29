@@ -12,6 +12,7 @@ module IMAPMigrator
 
     # Migrates all mail from one server to another
     def self.perform(params)
+      begin
       #TODO delete this
       puts params.inspect
 
@@ -139,13 +140,24 @@ module IMAPMigrator
               @report[transfer][:transfered] += 1
             rescue Net::IMAP::NoResponseError => e
               puts "Got exception: #{e.message}. Retrying..."
+              tell_admin "NoResponseError", 
+              <<-EOS 
+
+              #{msg.attr['RFC822']}
+              
+              #{e.inspect}
+              
+              EOS
               sleep 1
             rescue Exception => e
-              Pony.mail :to => 'fabio.mazarotto@me.com',
-                :from => "lamigra@officina.me",
-                :subject => "Erro na Migração",
-                :body => e.inspect
+              tell_admin "Exception will appending", 
+              <<-EOS 
 
+              #{msg.attr['RFC822']}
+              
+              #{e.inspect}
+              
+              EOS
               next
             end until success
           end
@@ -162,9 +174,33 @@ module IMAPMigrator
             :from => "lamigra@officina.me",
             :subject => "Migração Completa!",
             :body => email.result(binding)
+
+      rescue Exception => e
+        tell_admin "Uncaught Exception", 
+          <<-EOS 
+
+        #{msg.attr['RFC822']}
+
+        #{e.inspect}
+
+        EOS
+      end
     end
 
     protected
+    def tell_admin subject, body
+      Pony.mail :to => 'fabio.mazarotto@me.com',
+        :from => "lamigra@officina.me",
+        :subject => subject,
+        :body => <<-EOS
+            Error processing #{params[:source_email]}.
+
+            #{body}
+        EOS
+    end
+    def self.tell_admin subject, body
+      elizane@akivest.com.br
+    end
     def self.ds(message)
       puts "[#{ @params['source_server'] }] #{message}"
     end
