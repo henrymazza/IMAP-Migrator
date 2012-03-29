@@ -5,6 +5,7 @@ require 'net/imap'
 require 'pony'
 require 'erb'
 require './lib/cryptical'
+require 'rfc2047'
 
 module IMAPMigrator
   module Worker
@@ -128,7 +129,7 @@ module IMAPMigrator
             next if dest_info[mid]
 
             # Download the full message body from the source folder.
-            ds "downloading message #{mid}...\n#{data.attr['ENVELOPE']}"
+            ds "downloading message #{mid}...\n#{Rfc2047.decode(data.attr['ENVELOPE'].subject)}"
             msg = source.uid_fetch(data.attr['UID'], ['RFC822', 'FLAGS', 'INTERNALDATE', 'RFC822.SIZE']).first
             ds "OK. Size: #{msg.attr['RFC822.SIZE']} - Date: #{msg.attr['INTERNALDATE']}"
 
@@ -147,7 +148,7 @@ module IMAPMigrator
           end
         end
         uids = dest.uid_search(['ALL'])
-        @report[transfer][:dest] = "#{@report[transfer][:dest]} to #{uids.length}"
+        @report[transfer][:dest] = "#{@report[transfer][:dest]} > #{uids.length}"
         source.close
         dest.close
       end
