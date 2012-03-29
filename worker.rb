@@ -141,29 +141,13 @@ module IMAPMigrator
               @report[transfer][:transfered] += 1
             rescue Net::IMAP::NoResponseError => e
               puts "Got exception: #{e.message}. Retrying..."
-              tell_admin "NoResponseError", 
-              <<-EOS 
-
-              #{msg.attr['RFC822']}
-              
-              #{e.inspect}
-              
-              EOS
+              tell_admin e.message, mst.attr['RFC822']
               sleep 1
-            rescue Exception => e
-              tell_admin "Exception will appending", 
-              <<-EOS 
-
-              #{msg.attr['RFC822']}
-              
-              #{e.inspect}
-              
-              EOS
-              next
             end until success
           end
         end
-
+        uids = dest.uid_search(['ALL'])
+        @report[transfer][:dest] = "#{@report[transfer][:dest]} to #{uids.length}"
         source.close
         dest.close
       end
