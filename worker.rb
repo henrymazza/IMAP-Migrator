@@ -179,8 +179,6 @@ module IMAPMigrator
         tell_admin "Uncaught Exception", 
           <<-EOS 
 
-        #{msg.attr['RFC822']}
-
         #{e.inspect}
 
         EOS
