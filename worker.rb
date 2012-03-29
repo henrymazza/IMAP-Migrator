@@ -163,9 +163,10 @@ module IMAPMigrator
       rescue Exception => e
         tell_admin "Uncaught Exception", 
           <<-EOS 
+        #{e.message}
 
-        #{e.inspect}
-
+        Stack Trace:
+        #{e.backtrace.inspect}
         EOS
       end
     end
